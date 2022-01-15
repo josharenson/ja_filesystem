@@ -8,7 +8,7 @@ FileImplJa::FileImplJa(std::string path,
                        std::string mode)
 : path_(std::move(path))
 , mode_(std::move(mode))
-, file_(fopen(path.c_str(), mode.c_str())) {}
+, file_(fopen(path_.c_str(), mode_.c_str())) {}
 
 FileImplJa::~FileImplJa() {
     fclose(file_);
