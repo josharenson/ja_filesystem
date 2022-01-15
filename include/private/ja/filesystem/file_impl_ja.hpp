@@ -9,7 +9,7 @@
 #include <string>
 
 namespace ja { namespace filesystem {
-class FileImplJa : public FileImpl {
+class FileImplJa : public File::Impl {
 public:
     FileImplJa(const std::string &path,
                const std::string &mode);

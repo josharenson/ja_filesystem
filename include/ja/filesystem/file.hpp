@@ -6,14 +6,14 @@
 #include <string>
 
 namespace ja { namespace filesystem {
-class FileImpl;
 class File {
 public:
+    class Impl;
     File(const std::string &path,
          const std::string &mode,
-         std::unique_ptr<FileImpl> pimpl=nullptr);
+         std::unique_ptr<File::Impl> pimpl=nullptr);
 
 private:
-    std::unique_ptr<FileImpl> pimpl_;
+    std::unique_ptr<File::Impl> pimpl_;
 };
 }}

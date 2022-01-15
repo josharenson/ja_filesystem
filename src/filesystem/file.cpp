@@ -7,5 +7,5 @@ using namespace ja::filesystem;
 
 File::File(const std::string &path,
            const std::string &mode,
-           std::unique_ptr<FileImpl> pimpl)
+           std::unique_ptr<File::Impl> pimpl)
     : pimpl_(pimpl ? std::move(pimpl) : std::make_unique<FileImplJa>(path, mode)) {}

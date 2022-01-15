@@ -3,7 +3,7 @@
 using namespace ja::filesystem;
 
 FileImplJa::FileImplJa(const std::string &path,
-                           const std::string &mode)
+                       const std::string &mode)
     : file_(fopen(path.c_str(), mode.c_str())) {}
 
 FileImplJa::~FileImplJa() {

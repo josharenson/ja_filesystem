@@ -2,9 +2,11 @@
 
 #pragma once
 
+#include <ja/filesystem/file.hpp>
+
 namespace ja { namespace filesystem {
-class FileImpl {
+class File::Impl {
 public:
-    virtual ~FileImpl() = default;
+    virtual ~Impl() = default;
 };
 }}
