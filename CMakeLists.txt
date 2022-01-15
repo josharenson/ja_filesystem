@@ -4,6 +4,8 @@ project(JaFilesystem CXX)
 
 option(BUILD_TESTS "Turn on to build tests" ON)
 
+add_subdirectory(src)
+
 if(BUILD_TESTS)
     add_subdirectory(${CMAKE_SOURCE_DIR}/Catch2)
     add_subdirectory(test)
