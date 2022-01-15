@@ -13,6 +13,8 @@ public:
          const std::string &mode,
          std::unique_ptr<File::Impl> pimpl=nullptr);
 
+    ~File();
+
 private:
     std::unique_ptr<File::Impl> pimpl_;
 };
