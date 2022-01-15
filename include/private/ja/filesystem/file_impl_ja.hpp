@@ -9,14 +9,18 @@
 #include <string>
 
 namespace ja { namespace filesystem {
-class FileImplJa : public File::Impl {
+class FileImplJa : public FileImpl {
 public:
-    FileImplJa(const std::string &path,
-               const std::string &mode);
+    FileImplJa(std::string path,
+               std::string mode);
 
     ~FileImplJa() override;
 
+    int32_t Remove() const override;
+
 private:
+    std::string path_;
+    std::string mode_;
     FILE *file_;
 };
 }}

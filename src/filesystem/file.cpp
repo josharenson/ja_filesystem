@@ -7,9 +7,15 @@
 
 using namespace ja::filesystem;
 
-File::File(const std::string &path,
-           const std::string &mode,
-           std::unique_ptr<File::Impl> pimpl)
-    :pimpl_(std::make_unique<FileImplJa>(path, mode)) {}
+File::File(std::string path, std::string mode)
+: File(std::make_unique<FileImplJa>(std::move(path), std::move(mode))) {}
 
 File::~File() = default;
+
+int32_t File::Remove() const {
+    return pimpl_->Remove();
+}
+
+File::File(std::unique_ptr<FileImpl> pimpl)
+: pimpl_(std::move(pimpl)) {}
+

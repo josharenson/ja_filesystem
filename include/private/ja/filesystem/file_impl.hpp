@@ -2,11 +2,13 @@
 
 #pragma once
 
-#include <ja/filesystem/file.hpp>
+#include <cstdint>
 
 namespace ja { namespace filesystem {
-class File::Impl {
+class FileImpl {
 public:
-    virtual ~Impl() = default;
+    virtual ~FileImpl() = default;
+
+    virtual int32_t Remove() const = 0;
 };
 }}

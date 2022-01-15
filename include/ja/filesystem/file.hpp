@@ -2,20 +2,24 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
 #include <string>
 
 namespace ja { namespace filesystem {
+class FileImpl;
 class File {
 public:
-    class Impl;
-    File(const std::string &path,
-         const std::string &mode,
-         std::unique_ptr<File::Impl> pimpl=nullptr);
+    File(std::string path, std::string mode);
+
+    int32_t Remove() const;
 
     ~File();
 
+protected:
+    File(std::unique_ptr<FileImpl> pimpl);
+
 private:
-    std::unique_ptr<File::Impl> pimpl_;
+    std::unique_ptr<FileImpl> pimpl_;
 };
 }}
