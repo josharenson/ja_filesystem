@@ -20,6 +20,12 @@ std::unique_ptr<PathImpl> PathImplJa::Copy() const {
     return std::make_unique<PathImplJa>(path_);
 }
 
+std::unique_ptr<PathImpl> PathImplJa::Join(const std::string &suffix) const {
+    auto result = std::make_unique<PathImplJa>(Normpath() + PathImpl::kPathSeparator() + suffix);
+    result->path_ = result->Normpath();
+    return result;
+}
+
 bool PathImplJa::Exists() const {
     return xplat::Exists(path_);
 }

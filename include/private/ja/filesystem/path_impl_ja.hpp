@@ -15,6 +15,7 @@ public:
 
     std::unique_ptr<PathImpl> Copy() const override;
     bool Exists() const override;
+    std::unique_ptr<PathImpl> Join(const std::string &suffix) const override;
     std::string Normpath() const override;
 
 private:

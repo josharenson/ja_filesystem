@@ -26,6 +26,10 @@ bool Path::Exists() const {
     return pimpl_->Exists();
 }
 
+Path Path::Join(const std::string &suffix) const {
+    return Path(std::move(pimpl_->Join(suffix)));
+}
+
 std::string Path::Normpath() const {
     return pimpl_->Normpath();
 }
@@ -41,7 +45,6 @@ Path Path::operator+(const Path &rhs) {
 }
 
 Path &Path::operator+=(const Path &rhs) {
-    return *this;
 }
 
 Path::Path(std::unique_ptr<PathImpl> pimpl)

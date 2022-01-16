@@ -36,6 +36,36 @@ TEST_CASE("PathImplJa::Exists", "[integ]") {
     f.Remove();
 }
 
+TEST_CASE("Path::Join", "[integ]") {
+    const std::string kPrefix = "taco";
+    const std::string kSuffix = "suadero";
+    const std::string kExpected = kPrefix + PathImpl::kPathSeparator() + kSuffix;
+
+    SECTION("Straightforward join") {
+        Path p0(kPrefix);
+        auto p1 = p0.Join(kSuffix);
+        REQUIRE(p1.Normpath() == kExpected);
+    }
+
+    SECTION("Leading separator only") {
+        Path p0(PathImpl::kPathSeparator() + kPrefix);
+        auto p1 = p0.Join(kSuffix);
+        REQUIRE(p1.Normpath() == PathImpl::kPathSeparator() + kExpected);
+    }
+
+    SECTION("Leading and trailing separators prefix") {
+        Path p0(PathImpl::kPathSeparator() + kPrefix + PathImpl::kPathSeparator());
+        auto p1 = p0.Join(kSuffix);
+        REQUIRE(p1.Normpath() == PathImpl::kPathSeparator() + kExpected);
+    }
+
+    SECTION("Prefix ending and suffix leading") {
+        Path p0(kPrefix + PathImpl::kPathSeparator());
+        auto p1 = p0.Join(PathImpl::kPathSeparator() + kSuffix);
+        REQUIRE(p1.Normpath() == kExpected);
+    }
+}
+
 TEST_CASE("Path::operator=", "[integ]") {
     SECTION("Normalized paths are the same after assignment") {
         Path p0("p0");
@@ -47,6 +77,11 @@ TEST_CASE("Path::operator=", "[integ]") {
         // Test
         p0 = p1;
 
+        // Post condition
         REQUIRE(p0.Normpath() == p1.Normpath());
     }
+}
+
+TEST_CASE("Path::operator+=", "[integ]") {
+    
 }
