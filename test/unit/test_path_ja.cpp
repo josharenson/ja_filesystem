@@ -13,19 +13,40 @@
 using namespace ja::filesystem;
 
 // FIXME: Remove when join is implemented
-std::string Join(std::vector<std::string> path) {
+std::string Join(std::vector<std::string> path, const std::string separator) {
     std::string result;
     std::for_each(path.cbegin(), path.cend(), [&] (const auto &s) {
-        result += PathImpl::kPathSeparator() + s;
+        result += separator + s;
     });
     return result;
 }
 
 TEST_CASE("PathImplJa::Normpath", "[unit]") {
 
-    SECTION("Path ending in a separator has it removed") {
-        const std::string kExpected = Join({{"chorizo"}, {"taco"}});
-        PathImplJa path(kExpected + PathImpl::kPathSeparator());
+    const std::string kRoot = "lengua";
+    const std::string kLeaf = "taco";
+    const std::string kExpected = Join({{kRoot}, {kLeaf}}, PathImpl::kPathSeparator());
+
+    SECTION("Empty path returns empty path") {
+        PathImplJa path("");
+        REQUIRE(path.Normpath().empty());
+    }
+
+    SECTION("Path 2 consecutive separators") {
+        auto test_val = Join({{kRoot}, {kLeaf}}, PathImpl::kPathSeparator() + PathImpl::kPathSeparator());
+        PathImplJa path(test_val);
         REQUIRE(path.Normpath() == kExpected);
+    }
+
+    SECTION("Path 3 consecutive separators") {
+        auto test_val = Join({{kRoot}, {kLeaf}}, PathImpl::kPathSeparator() + PathImpl::kPathSeparator()) + PathImpl::kPathSeparator();
+        PathImplJa path(test_val);
+        REQUIRE(path.Normpath() == kExpected);
+    }
+
+    SECTION("Path ending in separator has it removed") {
+        const std::string kExpected_ = "taco";
+        PathImplJa path("taco" + PathImpl::kPathSeparator());
+        REQUIRE(path.Normpath() == kExpected_);
     }
 }

@@ -8,8 +8,8 @@
 using namespace ja::filesystem;
 
 namespace {
-    std::regex duplicate_separators_re(
-        "\\" + PathImpl::kPathSeparator() + "{2,}");
+    std::regex duplicate_separators_re(PathImpl::kPathSeparator() + "{2,}");
+    std::regex trailing_separator_re(PathImpl::kPathSeparator() + "$");
 }
 
 PathImplJa::PathImplJa(std::string path)
@@ -20,8 +20,13 @@ bool PathImplJa::Exists() const {
 }
 
 std::string PathImplJa::Normpath() const {
-    std::string result(path_);
+    if (path_.empty()) return path_;
+
     // Remove duplicates
-    std::regex_replace(result, duplicate_separators_re, PathImpl::kPathSeparator());
+    std::string result = std::regex_replace(path_, duplicate_separators_re, PathImpl::kPathSeparator());
+
+    // Remove trailing separator
+    result = std::regex_replace(result, trailing_separator_re, "");
+
     return result;
 }

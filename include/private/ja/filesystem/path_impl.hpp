@@ -14,9 +14,6 @@ public:
 
     static const std::string &kPathSeparator();
 
-protected:
-    PathImpl(std::string path_separator)
-
 private:
     std::string path_separator_;
 };
