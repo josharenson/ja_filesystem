@@ -12,9 +12,9 @@ class File {
 public:
     File(std::string path, std::string mode);
 
-    int32_t Remove() const;
-
     ~File();
+
+    int32_t Remove() const;
 
 protected:
     File(std::unique_ptr<FileImpl> pimpl);

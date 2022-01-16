@@ -1,6 +1,7 @@
 add_executable(IntegTestRunner
     test_bootstrap.cpp
     test_file_impl_ja.cpp
+    test_path_impl_ja.cpp
 )
 
 target_include_directories(IntegTestRunner
