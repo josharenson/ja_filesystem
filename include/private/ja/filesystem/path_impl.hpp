@@ -2,12 +2,15 @@
 
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace ja { namespace filesystem {
 class PathImpl {
 public:
     virtual ~PathImpl() = default;
+
+    virtual std::unique_ptr<PathImpl> Copy() const = 0;
 
     virtual bool Exists() const = 0;
     virtual std::string Normpath() const = 0;

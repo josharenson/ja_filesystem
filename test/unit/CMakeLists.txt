@@ -1,5 +1,6 @@
 add_executable(UnitTestRunner
     test_bootstrap.cpp
+    test_path.cpp
     test_path_ja.cpp
 )
 

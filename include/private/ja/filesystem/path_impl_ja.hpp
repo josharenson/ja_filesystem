@@ -13,6 +13,7 @@ public:
 
     ~PathImplJa() override = default;
 
+    std::unique_ptr<PathImpl> Copy() const override;
     bool Exists() const override;
     std::string Normpath() const override;
 

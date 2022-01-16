@@ -8,6 +8,7 @@
 #include <ja/filesystem/file.hpp>
 
 // Under Test
+#include <ja/filesystem/path.hpp>
 #include <private/ja/filesystem/path_impl_ja.hpp>
 
 using namespace ja::filesystem;
@@ -33,4 +34,19 @@ TEST_CASE("PathImplJa::Exists", "[integ]") {
     }
 
     f.Remove();
+}
+
+TEST_CASE("Path::operator=", "[integ]") {
+    SECTION("Normalized paths are the same after assignment") {
+        Path p0("p0");
+        Path p1("p1");
+
+        // Precondition
+        REQUIRE_FALSE(p0.Normpath() == p1.Normpath());
+
+        // Test
+        p0 = p1;
+
+        REQUIRE(p0.Normpath() == p1.Normpath());
+    }
 }

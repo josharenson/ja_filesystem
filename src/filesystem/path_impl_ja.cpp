@@ -4,6 +4,7 @@
 #include <private/ja/filesystem/path_impl_ja_exists.hpp>
 
 #include <regex>
+#include <utility>
 
 using namespace ja::filesystem;
 
@@ -14,6 +15,10 @@ namespace {
 
 PathImplJa::PathImplJa(std::string path)
 : path_(std::move(path)) {}
+
+std::unique_ptr<PathImpl> PathImplJa::Copy() const {
+    return std::make_unique<PathImplJa>(path_);
+}
 
 bool PathImplJa::Exists() const {
     return xplat::Exists(path_);
@@ -27,6 +32,8 @@ std::string PathImplJa::Normpath() const {
 
     // Remove trailing separator
     result = std::regex_replace(result, trailing_separator_re, "");
+
+    // TODO: If windows, replace / with \
 
     return result;
 }
