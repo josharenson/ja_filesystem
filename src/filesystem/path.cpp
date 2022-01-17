@@ -39,17 +39,15 @@ Path &Path::operator=(Path other) {
     return *this;
 }
 
-Path Path::operator+(const Path &rhs) {
-    *this += rhs;
-    return Path(*this);
-}
-
 Path &Path::operator+=(const Path &rhs) {
+    *this = Join(rhs.Normpath());
+    return *this;
 }
 
 Path::Path(std::unique_ptr<PathImpl> pimpl)
 : pimpl_(std::move(pimpl)) {}
 
-Path operator+(Path lhs, const Path &rhs) {
-    return Path("");
+Path ja::filesystem::operator+(Path lhs, const Path &rhs) {
+    lhs += rhs;
+    return lhs;
 }

@@ -21,7 +21,9 @@ std::unique_ptr<PathImpl> PathImplJa::Copy() const {
 }
 
 std::unique_ptr<PathImpl> PathImplJa::Join(const std::string &suffix) const {
-    auto result = std::make_unique<PathImplJa>(Normpath() + PathImpl::kPathSeparator() + suffix);
+    auto prefix = Normpath().empty() ? "" : Normpath() + PathImpl::kPathSeparator();
+
+    auto result = std::make_unique<PathImplJa>(prefix + suffix);
     result->path_ = result->Normpath();
     return result;
 }

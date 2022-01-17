@@ -20,17 +20,17 @@ TEST_CASE("PathImplJa::Ctor", "[integ][bootstrap]") {
     }
 }
 
-TEST_CASE("PathImplJa::Exists", "[integ]") {
+TEST_CASE("Path::Exists", "[integ]") {
 
     const std::string kFilepath = "/tmp/lengua.taco";
     File f(kFilepath, "w");
 
     SECTION("Returns true if file exists") {
-        REQUIRE(PathImplJa(kFilepath).Exists());
+        REQUIRE(Path(kFilepath).Exists());
     }
 
     SECTION("Returns false if file doesn't exist") {
-        REQUIRE_FALSE(PathImplJa(kFilepath + ".fake").Exists());
+        REQUIRE_FALSE(Path(kFilepath + ".fake").Exists());
     }
 
     f.Remove();
@@ -82,6 +82,71 @@ TEST_CASE("Path::operator=", "[integ]") {
     }
 }
 
-TEST_CASE("Path::operator+=", "[integ]") {
-    
+TEST_CASE("Path::operator+=", "[unit]") {
+
+    const std::string kPrefix = "taco";
+    const std::string kSuffix = "suadero";
+    const std::string kExpected = kPrefix + PathImpl::kPathSeparator() + kSuffix;
+
+    SECTION("Straightforward join") {
+        Path p0(kPrefix);
+        Path p1(kSuffix);
+        p0 += p1;
+        REQUIRE(p0.Normpath() == kExpected);
+    }
+}
+
+TEST_CASE("Path::operator+", "[integ]") {
+
+    const std::string kPrefix = "taco";
+    const std::string kSuffix = "suadero";
+    const std::string kExpected = kPrefix + PathImpl::kPathSeparator() + kSuffix;
+
+    SECTION("Straightforward join") {
+        Path p0(kPrefix);
+        Path p1(kSuffix);
+        Path p2 = p0 + p1;
+
+        REQUIRE(p0.Normpath() == kPrefix);
+        REQUIRE(p1.Normpath() == kSuffix);
+        REQUIRE(p2.Normpath() == kExpected);
+    }
+
+    SECTION("Empty lhs") {
+        Path p0;
+        Path p1(kPrefix);
+        auto p2 = p0 + p1;
+
+        REQUIRE(p0.Normpath().empty());
+        REQUIRE(p1.Normpath() == kPrefix);
+        REQUIRE(p2.Normpath() == kPrefix);
+    }
+
+    SECTION("Empty rhs") {
+        Path p0(kPrefix);
+        Path p1;
+
+        auto p2 = p0 + p1;
+        REQUIRE(p2.Normpath() == p0.Normpath());
+        REQUIRE(p2.Normpath() == kPrefix);
+    }
+
+    SECTION("Multiple adds") {
+        const std::string kExpected =
+            kPrefix +
+            PathImpl::kPathSeparator() +
+            "grande" +
+            PathImpl::kPathSeparator() +
+            kSuffix;
+
+        Path p0(kPrefix);
+        Path p1("grande");
+        Path p2(kSuffix);
+
+        auto p3 = p0 + p1 + p2;
+        REQUIRE(p0.Normpath() == kPrefix);
+        REQUIRE(p1.Normpath() == "grande");
+        REQUIRE(p2.Normpath() == kSuffix);
+        REQUIRE(p3.Normpath() == kExpected);
+    }
 }

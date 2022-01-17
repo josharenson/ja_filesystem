@@ -25,7 +25,6 @@ public:
     std::string Normpath() const;
 
     Path &operator=(Path other);
-    Path operator+(const Path &rhs);
     Path &operator+=(const Path &rhs);
 
 protected:
