@@ -18,6 +18,9 @@ public:
 
     ~Path();
 
+    // prepends cwd
+    Path Abspath() const;
+
     bool Exists() const;
 
     Path Join(const std::string &suffix) const;

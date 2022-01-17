@@ -22,6 +22,10 @@ Path::Path(Path &&other) noexcept
 
 Path::~Path() = default;
 
+Path Path::Abspath() const {
+    return Path(std::move(pimpl_->Abspath()));
+}
+
 bool Path::Exists() const {
     return pimpl_->Exists();
 }

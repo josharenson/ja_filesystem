@@ -2,6 +2,7 @@
 
 #include <private/ja/filesystem/path_impl_ja.hpp>
 #include <private/ja/filesystem/path_impl_ja_exists.hpp>
+#include <private/ja/filesystem/path_impl_ja_getcwd.hpp>
 
 #include <regex>
 #include <utility>
@@ -15,6 +16,10 @@ namespace {
 
 PathImplJa::PathImplJa(std::string path)
 : path_(std::move(path)) {}
+
+std::unique_ptr<PathImpl> PathImplJa::Abspath() const {
+    return nullptr;
+}
 
 std::unique_ptr<PathImpl> PathImplJa::Copy() const {
     return std::make_unique<PathImplJa>(path_);
