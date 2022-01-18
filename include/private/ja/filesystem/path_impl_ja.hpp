@@ -14,10 +14,12 @@ public:
     ~PathImplJa() override = default;
 
     std::unique_ptr<PathImpl> Abspath() const override;
+    std::unique_ptr<PathImpl> Basename() const override;
     std::unique_ptr<PathImpl> Copy() const override;
     bool Exists() const override;
     std::unique_ptr<PathImpl> Join(const std::string &suffix) const override;
     std::string Normpath() const override;
+    std::string ToString() const override;
 
 private:
     std::string path_;

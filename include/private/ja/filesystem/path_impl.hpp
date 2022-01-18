@@ -13,12 +13,16 @@ public:
 
     virtual std::unique_ptr<PathImpl> Abspath() const = 0;
 
+    virtual std::unique_ptr<PathImpl> Basename() const = 0;
+
     virtual std::unique_ptr<PathImpl> Copy() const = 0;
 
     virtual bool Exists() const = 0;
 
     virtual std::unique_ptr<PathImpl> Join(const std::string&) const = 0;
     virtual std::string Normpath() const = 0;
+
+    virtual std::string ToString() const = 0;
 
     static const std::string &kPathSeparator();
 

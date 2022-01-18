@@ -21,11 +21,15 @@ public:
     // prepends cwd
     Path Abspath() const;
 
+    Path Basename() const;
+
     bool Exists() const;
 
     Path Join(const std::string &suffix) const;
 
     std::string Normpath() const;
+
+    std::string ToString() const;
 
     Path &operator=(Path other);
     Path &operator+=(const Path &rhs);

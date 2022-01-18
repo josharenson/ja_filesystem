@@ -26,6 +26,10 @@ Path Path::Abspath() const {
     return Path(std::move(pimpl_->Abspath()));
 }
 
+Path Path::Basename() const {
+    return Path(std::move(pimpl_->Basename()));
+}
+
 bool Path::Exists() const {
     return pimpl_->Exists();
 }
@@ -36,6 +40,10 @@ Path Path::Join(const std::string &suffix) const {
 
 std::string Path::Normpath() const {
     return pimpl_->Normpath();
+}
+
+std::string Path::ToString() const {
+    return pimpl_->ToString();
 }
 
 Path &Path::operator=(Path other) {

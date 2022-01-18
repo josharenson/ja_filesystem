@@ -4,6 +4,7 @@
 #include <private/ja/filesystem/path_impl_ja_exists.hpp>
 #include <private/ja/filesystem/path_impl_ja_getcwd.hpp>
 
+#include <cassert>
 #include <regex>
 #include <utility>
 
@@ -20,6 +21,11 @@ PathImplJa::PathImplJa(std::string path)
 std::unique_ptr<PathImpl> PathImplJa::Abspath() const {
     auto prefix = std::make_unique<PathImplJa>(xplat::GetCwd());
     return prefix->Join(path_);
+}
+
+std::unique_ptr<PathImpl> PathImplJa::Basename() const {
+    // TODO: Implement when split is done
+    return nullptr;
 }
 
 std::unique_ptr<PathImpl> PathImplJa::Copy() const {
@@ -56,4 +62,8 @@ std::string PathImplJa::Normpath() const {
     // TODO: If windows, replace / with \
 
     return result;
+}
+
+std::string PathImplJa::ToString() const {
+    return path_;
 }
