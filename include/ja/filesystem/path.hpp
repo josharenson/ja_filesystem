@@ -31,7 +31,13 @@ public:
    */
   Path Abspath() const;
 
-  // TODO
+  /**
+   * @return A Path of the base name of `this` path. This is the second element
+   * of the pair returned by `this` path to the function Split(). Note that the
+   * result of this function is different from the Unix basename program; where
+   * basename for '/foo/bar/' returns 'bar', the Basename() function returns an
+   * empty string ('').
+   */
   Path Basename() const;
 
   /**

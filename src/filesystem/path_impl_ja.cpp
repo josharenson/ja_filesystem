@@ -47,8 +47,9 @@ std::unique_ptr<PathImpl> PathImplJa::Abspath() const {
 }
 
 std::unique_ptr<PathImpl> PathImplJa::Basename() const {
-    // TODO: Implement when split is done
-    return nullptr;
+  auto pair = Split();
+  auto init = pair.second.empty() ? pair.first : pair.second;
+  return std::make_unique<PathImplJa>(init);
 }
 
 std::unique_ptr<PathImpl> PathImplJa::Copy() const {

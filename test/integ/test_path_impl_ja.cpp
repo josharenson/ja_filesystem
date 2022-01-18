@@ -57,39 +57,37 @@ TEST_CASE("Path::Abspath == Python", "[integ][python]") {
 }
 #endif
 
-/*#if defined(HAS_PYTHON)
+#if defined(HAS_PYTHON)
 TEST_CASE("Path::Basename == Python", "[integ][python]") {
 
     SECTION("Basic basename") {
         const std::string prefix = "carnitas";
         const std::string suffix = "torta";
-        Path _(prefix);
-        auto p0 = _.Join(suffix);
-        auto p1 = p0.Basename();
-        auto pythonSays = CallPython("basename", {{p1.Normpath()}});
-        REQUIRE(pythonSays == p1.Normpath());
+        auto p0 = Path(prefix).Join(suffix);
+        auto pythonSays = CallPython("basename", {{p0.ToString()}});
+        REQUIRE(pythonSays == p0.Basename().ToString());
     }
 
     SECTION("Empty path") {
         Path p0;
         auto pythonSays = CallPython("basename", {{""}});
-        REQUIRE(pythonSays == p0.Normpath());
+        REQUIRE(pythonSays == p0.Basename().ToString());
     }
 
     SECTION("Single path no slashes") {
         Path p0("taco");
         auto pythonSays = CallPython("basename", {{"taco"}});
-        REQUIRE(pythonSays == p0.Normpath());
+        REQUIRE(pythonSays == p0.Basename().ToString());
     }
 
     SECTION("Single path leading slash") {
         const auto prefix = PathImpl::kPathSeparator() + "taco";
         Path p0(prefix);
         auto pythonSays = CallPython("basename", {{prefix}});
-        REQUIRE(pythonSays == p0.ToString());
+        REQUIRE(pythonSays == p0.Basename().ToString());
     }
 }
-#endif*/
+#endif
 
 TEST_CASE("Path::Exists", "[integ]") {
 

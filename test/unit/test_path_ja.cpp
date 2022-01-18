@@ -4,13 +4,39 @@
 
 #include <algorithm>
 #include <string>
-#include <vector>
 
 // Under test
 #include <ja/filesystem/path.hpp>
 #include <private/ja/filesystem/path_impl_ja.hpp>
 
 using namespace ja::filesystem;
+
+TEST_CASE("Path::Basename", "[unit]") {
+  const std::string kPrefix = "tripas";
+  const std::string kSuffix = "menudo";
+
+  SECTION("Basic basename") {
+    auto p0 = Path(kPrefix).Join(kSuffix);
+    REQUIRE(p0.Basename().ToString() == kSuffix);
+  }
+
+  SECTION("Empty path") {
+    Path p0;
+    REQUIRE(p0.Basename().ToString().empty());
+  }
+
+  SECTION("Single path no slashes") {
+    Path p0(kPrefix);
+    REQUIRE(p0.Basename().ToString() == kPrefix);
+  }
+
+  SECTION("Single path leading slash") {
+    const auto prefix = PathImpl::kPathSeparator() + kPrefix;
+    Path p0(prefix);
+    // Leading slash is removed
+    REQUIRE(p0.Basename().ToString() == kPrefix);
+  }
+}
 
 TEST_CASE("Path::Join", "[unit]") {
   const std::string kPrefix = "taco";
