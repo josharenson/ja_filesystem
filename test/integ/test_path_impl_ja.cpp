@@ -13,12 +13,52 @@
 
 using namespace ja::filesystem;
 
-TEST_CASE("PathImplJa::Ctor", "[integ][bootstrap]") {
+#if defined(HAS_PYTHON)
+#include <Python.h>
+std::string CallPython(const std::string &func,
+        const std::vector<std::string> &args={}) {
+    Py_Initialize();
 
+    auto *pName = PyUnicode_FromString("os.path");
+    auto *pModule = PyImport_Import(pName);
+    auto *pDict = PyModule_GetDict(pModule);
+    auto *pFunc = PyDict_GetItemString(pDict, func.c_str());
+    REQUIRE(pFunc);
+
+    auto *pythonArgument = PyTuple_New();
+    auto *pArg1 = PyUnicode_FromString(arg.c_str());
+    PyTuple_SetItem(pythonArgument, 0, pArg1);
+
+    auto *pValue = PyObject_CallObject(pFunc, pythonArgument);
+
+    auto *repr = PyObject_Repr(pValue);
+    auto *str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
+    const char *bytes = PyBytes_AS_STRING(str);
+
+    Py_Finalize();
+    std::string result(bytes);
+    return result;
+}
+#endif
+
+TEST_CASE("PathImplJa::Ctor", "[integ][bootstrap]") {
     SECTION("Can compile") {
         PathImplJa p("/tmp/carne_asada.taco");
     }
 }
+
+#if defined(HAS_PYTHON)
+TEST_CASE("Path::Abspath == Python", "[integ][python]") {
+    SECTION("Empty returns pwd") {
+        // Erase and pop_back remove surrounding single-quotes
+        auto pwd = CallPython("abspath").erase(0,1);
+        pwd.pop_back();
+        Path p0;
+        auto p1 = p0.Abspath();
+        REQUIRE(pwd == p1.Normpath());
+    }
+}
+#endif
 
 TEST_CASE("Path::Exists", "[integ]") {
 
@@ -36,7 +76,19 @@ TEST_CASE("Path::Exists", "[integ]") {
     f.Remove();
 }
 
-TEST_CASE("Path::Join", "[integ]") {
+#if defined(HAS_PYTHON)
+TEST_CASE("Path::Join == Python", "[integ][python]") {
+    const std::string kPrefix = "burrito";
+    const std::string kSuffix = "california";
+    SECTION("Straightforward join") {
+        Path p0(kPrefix);
+        auto p1 = p0.Join(kSuffix);
+        auto pythonSays 
+    }
+}
+#endif
+
+TEST_CASE("Path::Join", "[unit]") {
     const std::string kPrefix = "taco";
     const std::string kSuffix = "suadero";
     const std::string kExpected = kPrefix + PathImpl::kPathSeparator() + kSuffix;
@@ -66,7 +118,7 @@ TEST_CASE("Path::Join", "[integ]") {
     }
 }
 
-TEST_CASE("Path::operator=", "[integ]") {
+TEST_CASE("Path::operator=", "[unit]") {
     SECTION("Normalized paths are the same after assignment") {
         Path p0("p0");
         Path p1("p1");
@@ -96,7 +148,7 @@ TEST_CASE("Path::operator+=", "[unit]") {
     }
 }
 
-TEST_CASE("Path::operator+", "[integ]") {
+TEST_CASE("Path::operator+", "[unit]") {
 
     const std::string kPrefix = "taco";
     const std::string kSuffix = "suadero";

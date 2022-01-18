@@ -5,6 +5,7 @@
 #include <catch/fakeit.hpp>
 
 #include <utility>
+#include <vector>
 
 // Under test
 #include <ja/filesystem/path.hpp>
@@ -24,18 +25,24 @@ TEST_CASE("Path API", "[unit]") {
 
     fakeit::Mock<PathImpl> mockPath;
     fakeit::Fake(Dtor(mockPath));
-    // fakeit::Fake(Method(mockPath, Abspath));
-    fakeit::When(Method(mockPath, Copy)).Do([]{ return std::make_unique<TestPath>(nullptr); });
+    fakeit::When(Method(mockPath, Abspath)).Do([] {
+        return nullptr;
+    });
+    fakeit::When(Method(mockPath, Copy)).Do([] {
+        return nullptr;
+    });
     fakeit::Fake(Method(mockPath, Exists));
-    // fakeit::Fake(Method(mockPath, Join));
+    fakeit::When(Method(mockPath, Join)).Do([](...) {
+        return nullptr;
+    });
     fakeit::Fake(Method(mockPath, Normpath));
 
     std::unique_ptr<PathImpl> mockPathPtr(&mockPath.get());
 
     SECTION("Abspath calls pimpl") {
         TestPath path(std::move(mockPathPtr));
-        // path.Abspath();
-        // fakeit::Verify(Method(mockPath, Abspath));
+        path.Abspath();
+        fakeit::Verify(Method(mockPath, Abspath));
     }
 
     SECTION("Exists calls pimpl") {
@@ -46,8 +53,8 @@ TEST_CASE("Path API", "[unit]") {
 
     SECTION("Join calls pimpl") {
         TestPath path(std::move(mockPathPtr));
-        // path.Join("");
-        // fakeit::Verify(Method(mockPath, Join));
+        path.Join("");
+        fakeit::Verify(Method(mockPath, Join));
     }
 
     SECTION("Normpath calls pimpl") {

@@ -18,7 +18,8 @@ PathImplJa::PathImplJa(std::string path)
 : path_(std::move(path)) {}
 
 std::unique_ptr<PathImpl> PathImplJa::Abspath() const {
-    return nullptr;
+    auto prefix = std::make_unique<PathImplJa>(xplat::GetCwd());
+    return prefix->Join(path_);
 }
 
 std::unique_ptr<PathImpl> PathImplJa::Copy() const {
