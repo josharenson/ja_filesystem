@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace ja { namespace filesystem {
@@ -63,6 +64,21 @@ public:
    * @return The normalized value of `this` path.
    */
   std::string Normpath() const;
+
+  /**
+   * Split `this` path into a pair, (head, tail) where tail is the last
+   * pathname component and head is everything leading up to that. The tail part
+   * will never contain a slash; if path ends in a slash, tail will be empty. If
+   * there is no slash in path, head will be empty. If `this` path is empty,
+   * both head and tail are empty. Trailing slashes are stripped from head
+   * unless it is the root (one or more slashes only). In all cases, join(head,
+   * tail) returns a path to the same location as path (but the strings may
+   * differ).
+   *
+   * @return - A std::pair of strings where `first` is the head and `second` is
+   * the tail.
+   */
+  std::pair<std::string, std::string> Split() const;
 
   std::string ToString() const;
 

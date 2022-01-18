@@ -160,3 +160,50 @@ TEST_CASE("Path::operator+", "[unit]") {
     REQUIRE(p3.Normpath() == expected);
   }
 }
+
+TEST_CASE("Path::Split", "[integ][python]") {
+  const std::string kPrefix = "taco";
+  const std::string kSuffix = "birria";
+
+ SECTION("Straightforward split") {
+    auto p0 = Path(kPrefix).Join(kSuffix);
+    auto pair = p0.Split();
+    REQUIRE(pair.first == kPrefix);
+    REQUIRE(pair.second == kSuffix);
+  }
+
+  SECTION("Empty path") {
+    Path p0;
+    auto pair = p0.Split();
+    REQUIRE(pair.first.empty());
+    REQUIRE (pair.second.empty());
+  }
+
+  SECTION("Leading slash remains with 2 parts") {
+    auto p0 = Path(PathImpl::kPathSeparator() + kPrefix).Join(kSuffix);
+    auto pair = p0.Split();
+    REQUIRE(pair.first == PathImpl::kPathSeparator() + kPrefix);
+    REQUIRE(pair.second == kSuffix);
+  }
+
+  SECTION("Leading slash splits with one part") {
+    Path p0(PathImpl::kPathSeparator() + kPrefix);
+    auto pair = p0.Split();
+    REQUIRE(pair.first == PathImpl::kPathSeparator());
+    REQUIRE(pair.second == kPrefix);
+  }
+
+  SECTION("Double slash") {
+    Path p0(kPrefix + PathImpl::kPathSeparator() + PathImpl::kPathSeparator() +
+            kSuffix);
+    Path p1(PathImpl::kPathSeparator() + kPrefix + PathImpl::kPathSeparator() +
+            PathImpl::kPathSeparator() + kSuffix);
+    auto pair0 = p0.Split();
+    auto pair1 = p1.Split();
+
+    REQUIRE(pair0.first == kPrefix);
+    REQUIRE(pair0.second == kSuffix);
+    REQUIRE(pair1.first == PathImpl::kPathSeparator() + kPrefix);
+    REQUIRE(pair1.second == kSuffix);
+  }
+}

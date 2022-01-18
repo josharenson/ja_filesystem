@@ -144,3 +144,73 @@ TEST_CASE("Path::Join == Python", "[integ][python]") {
     }
 }
 #endif
+
+#if defined(HAS_PYTHON)
+TEST_CASE("Path::Split == Python", "[integ][python]") {
+
+  auto TuplizePythonStr = [](const std::string &str){
+    std::string head = str.substr(0, str.find_last_of(','));
+    head.erase(0, 1); // leading '
+    head.pop_back(); // trailing '
+
+    auto leadingChars = strlen("'', ");
+    std::string tail = str.substr(head.size() + leadingChars);
+    tail.erase(0, 1);
+    tail.pop_back();
+    return std::make_pair(head, tail);
+  };
+
+  const std::string kPrefix = "horchata";
+  const std::string kSuffix = "tamarindo";
+
+  SECTION("Straightforward split") {
+    auto path = Path(kPrefix).Join(kSuffix);
+    auto pair = path.Split();
+    auto pythonSays = TuplizePythonStr(
+        CallPython("split", {kPrefix + PathImpl::kPathSeparator() + kSuffix}));
+
+    REQUIRE(pair.first == pythonSays.first);
+    REQUIRE(pair.second == pythonSays.second);
+  }
+
+  SECTION("Empty path") {
+    Path path;
+    auto pair = path.Split();
+    auto pythonSays = TuplizePythonStr(CallPython("split", {{""}}));
+
+    REQUIRE(pair.first == pythonSays.first);
+    REQUIRE(pair.second == pythonSays.second);
+  }
+
+  SECTION("Leading slash splits with one part") {
+    Path p0(PathImpl::kPathSeparator() + kPrefix);
+    auto pair = p0.Split();
+    auto pythonSays = TuplizePythonStr(
+        CallPython("split", {{PathImpl::kPathSeparator() + kPrefix}}));
+
+    REQUIRE(pair.first == pythonSays.first);
+    REQUIRE(pair.second == pythonSays.second);
+  }
+
+  SECTION("Double slash") {
+    auto prefix0 = kPrefix + PathImpl::kPathSeparator() + PathImpl::kPathSeparator() +
+                   kSuffix;
+    Path p0(prefix0);
+    auto pair0 = p0.Split();
+
+    auto pythonSays0 = TuplizePythonStr(CallPython("split", {{prefix0}}));
+    REQUIRE(pair0.first == pythonSays0.first);
+    REQUIRE(pair0.second == pythonSays0.second);
+
+    auto prefix1 = PathImpl::kPathSeparator() + kPrefix +
+                   PathImpl::kPathSeparator() + PathImpl::kPathSeparator() +
+                   kSuffix;
+    Path p1(prefix1);
+    auto pair1 = p1.Split();
+
+    auto pythonSays1 = TuplizePythonStr(CallPython("split", {{prefix1}}));
+    REQUIRE(pair1.first == pythonSays1.first);
+    REQUIRE(pair1.second == pythonSays1.second);
+  }
+}
+#endif

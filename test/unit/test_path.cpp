@@ -23,43 +23,50 @@ using namespace ja::filesystem;
 
 TEST_CASE("Path API", "[unit]") {
 
-    fakeit::Mock<PathImpl> mockPath;
-    fakeit::Fake(Dtor(mockPath));
-    fakeit::When(Method(mockPath, Abspath)).Do([] {
-        return nullptr;
-    });
-    fakeit::When(Method(mockPath, Copy)).Do([] {
-        return nullptr;
-    });
-    fakeit::Fake(Method(mockPath, Exists));
-    fakeit::When(Method(mockPath, Join)).Do([](const std::string&) {
-        return nullptr;
-    });
-    fakeit::Fake(Method(mockPath, Normpath));
+  fakeit::Mock<PathImpl> mockPath;
+  fakeit::Fake(Dtor(mockPath));
+  fakeit::When(Method(mockPath, Abspath)).Do([] {
+    return nullptr;
+  });
+  fakeit::When(Method(mockPath, Copy)).Do([] {
+    return nullptr;
+  });
+  fakeit::Fake(Method(mockPath, Exists));
+  fakeit::When(Method(mockPath, Join)).Do([](const std::string &) {
+    return nullptr;
+  });
+  fakeit::Fake(Method(mockPath, Normpath));
+  fakeit::Fake(Method(mockPath, Split));
 
-    std::unique_ptr<PathImpl> mockPathPtr(&mockPath.get());
+  std::unique_ptr<PathImpl> mockPathPtr(&mockPath.get());
 
-    SECTION("Abspath calls pimpl") {
-        TestPath path(std::move(mockPathPtr));
-        path.Abspath();
-        fakeit::Verify(Method(mockPath, Abspath));
-    }
+  SECTION("Abspath calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Abspath();
+    fakeit::Verify(Method(mockPath, Abspath));
+  }
 
-    SECTION("Exists calls pimpl") {
-        TestPath path(std::move(mockPathPtr));
-        path.Exists();
-        fakeit::Verify(Method(mockPath, Exists));
-    }
+  SECTION("Exists calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Exists();
+    fakeit::Verify(Method(mockPath, Exists));
+  }
 
-    SECTION("Join calls pimpl") {
-        TestPath path(std::move(mockPathPtr));
-        path.Join("");
-        fakeit::Verify(Method(mockPath, Join));
-    }
+  SECTION("Join calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Join("");
+    fakeit::Verify(Method(mockPath, Join));
+  }
 
-    SECTION("Normpath calls pimpl") {
-        TestPath path(std::move(mockPathPtr));
-        path.Normpath();
-        fakeit::Verify(Method(mockPath, Normpath));
-    }
+  SECTION("Normpath calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Normpath();
+    fakeit::Verify(Method(mockPath, Normpath));
+  }
+
+  SECTION("Split calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Split();
+    fakeit::Verify(Method(mockPath, Split));
+  }
 }

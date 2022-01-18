@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace ja { namespace filesystem {
 class Path;
@@ -22,6 +23,8 @@ public:
   virtual std::unique_ptr<PathImpl> Join(const std::string &) const = 0;
 
   virtual std::string Normpath() const = 0;
+
+  virtual std::pair<std::string, std::string> Split() const = 0;
 
   virtual std::string ToString() const = 0;
 

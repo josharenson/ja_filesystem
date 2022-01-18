@@ -31,6 +31,10 @@ Path Path::Join(const std::string &suffix) const {
 
 std::string Path::Normpath() const { return pimpl_->Normpath(); }
 
+std::pair<std::string, std::string> Path::Split() const {
+  return pimpl_->Split();
+}
+
 std::string Path::ToString() const { return pimpl_->ToString(); }
 
 Path &Path::operator=(Path other) {
