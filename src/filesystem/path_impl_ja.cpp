@@ -29,6 +29,12 @@ std::unique_ptr<PathImpl> PathImplJa::Copy() const {
 std::unique_ptr<PathImpl> PathImplJa::Join(const std::string &suffix) const {
     auto prefix = Normpath().empty() ? "" : Normpath() + PathImpl::kPathSeparator();
 
+    // If a component is an absolute path, all previous components are thrown away and joining continues from the
+    // absolute path component.
+    if(suffix.substr(0, PathImpl::kPathSeparator().size()) == PathImpl::kPathSeparator()) {
+        return std::make_unique<PathImplJa>(suffix);
+    }
+
     auto result = std::make_unique<PathImplJa>(prefix + suffix);
     result->path_ = result->Normpath();
     return result;

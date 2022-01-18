@@ -25,9 +25,11 @@ std::string CallPython(const std::string &func,
     auto *pFunc = PyDict_GetItemString(pDict, func.c_str());
     REQUIRE(pFunc);
 
-    auto *pythonArgument = PyTuple_New();
-    auto *pArg1 = PyUnicode_FromString(arg.c_str());
-    PyTuple_SetItem(pythonArgument, 0, pArg1);
+    auto *pythonArgument = PyTuple_New(args.size());
+    for (int i = 0; i < args.size(); i++) {
+        auto *pArg = PyUnicode_FromString(args[i].c_str());
+        PyTuple_SetItem(pythonArgument, i, pArg);
+    }
 
     auto *pValue = PyObject_CallObject(pFunc, pythonArgument);
 
@@ -37,6 +39,9 @@ std::string CallPython(const std::string &func,
 
     Py_Finalize();
     std::string result(bytes);
+    // Erase and pop_back remove surrounding single-quotes
+    result.erase(0, 1);
+    result.pop_back();
     return result;
 }
 #endif
@@ -50,9 +55,7 @@ TEST_CASE("PathImplJa::Ctor", "[integ][bootstrap]") {
 #if defined(HAS_PYTHON)
 TEST_CASE("Path::Abspath == Python", "[integ][python]") {
     SECTION("Empty returns pwd") {
-        // Erase and pop_back remove surrounding single-quotes
-        auto pwd = CallPython("abspath").erase(0,1);
-        pwd.pop_back();
+        auto pwd = CallPython("abspath", {{""}});
         Path p0;
         auto p1 = p0.Abspath();
         REQUIRE(pwd == p1.Normpath());
@@ -83,7 +86,33 @@ TEST_CASE("Path::Join == Python", "[integ][python]") {
     SECTION("Straightforward join") {
         Path p0(kPrefix);
         auto p1 = p0.Join(kSuffix);
-        auto pythonSays 
+        auto pythonSays = CallPython("join", {{kPrefix}, {kSuffix}});
+        REQUIRE(pythonSays == p1.Normpath());
+    }
+
+    SECTION("Leading separator only") {
+        Path p0(PathImpl::kPathSeparator() + kPrefix);
+        auto p1 = p0.Join(kSuffix);
+        auto pythonSays = CallPython("join", {{PathImpl::kPathSeparator() + kPrefix},{kSuffix}});
+        REQUIRE(pythonSays == p1.Normpath());
+    }
+
+    SECTION("Leading and trailing separators prefix") {
+        auto prefix = PathImpl::kPathSeparator() + kPrefix + PathImpl::kPathSeparator();
+        Path p0(prefix);
+        auto p1 = p0.Join(kSuffix);
+        auto pythonSays = CallPython("join",{{prefix}, {kSuffix}});
+        REQUIRE(pythonSays == p1.Normpath());
+    }
+
+    //  If a component is an absolute path, all previous components are thrown away and joining continues from the absolute path component.
+    SECTION("Prefix ending and suffix leading") {
+        auto prefix = kPrefix + PathImpl::kPathSeparator();
+        auto suffix = PathImpl::kPathSeparator() + kSuffix;
+        Path p0(prefix);
+        auto p1 = p0.Join(suffix);
+        auto pythonSays = CallPython("join", {{prefix}, {suffix}});
+        REQUIRE(pythonSays == p1.Normpath());
     }
 }
 #endif
@@ -111,10 +140,11 @@ TEST_CASE("Path::Join", "[unit]") {
         REQUIRE(p1.Normpath() == PathImpl::kPathSeparator() + kExpected);
     }
 
+    //  If a component is an absolute path, all previous components are thrown away and joining continues from the absolute path component.
     SECTION("Prefix ending and suffix leading") {
         Path p0(kPrefix + PathImpl::kPathSeparator());
         auto p1 = p0.Join(PathImpl::kPathSeparator() + kSuffix);
-        REQUIRE(p1.Normpath() == kExpected);
+        REQUIRE(p1.Normpath() == PathImpl::kPathSeparator() + kSuffix);
     }
 }
 
