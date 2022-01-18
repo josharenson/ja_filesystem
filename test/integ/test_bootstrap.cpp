@@ -2,6 +2,6 @@
 
 #include <catch2/catch.hpp>
 
-TEST_CASE("Test Nothing", "[unit]") {
+TEST_CASE("Bootstrap", "[integ]") {
     REQUIRE(true);
 }

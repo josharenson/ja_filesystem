@@ -1,2 +1,4 @@
+.idea
+cmake-*
 build
 third_party
