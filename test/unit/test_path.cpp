@@ -4,6 +4,7 @@
 #include <catch2/catch.hpp>
 #include <catch/fakeit.hpp>
 
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -28,6 +29,12 @@ TEST_CASE("Path API", "[unit]") {
   fakeit::When(Method(mockPath, Abspath)).Do([] {
     return nullptr;
   });
+  fakeit::When(Method(mockPath, Basename)).Do([]{
+    return nullptr;
+  });
+  fakeit::When(Method(mockPath, Commonpath)).Do([](const std::vector<std::string>&){
+    return nullptr;
+  });
   fakeit::When(Method(mockPath, Copy)).Do([] {
     return nullptr;
   });
@@ -44,6 +51,18 @@ TEST_CASE("Path API", "[unit]") {
     TestPath path(std::move(mockPathPtr));
     path.Abspath();
     fakeit::Verify(Method(mockPath, Abspath));
+  }
+
+  SECTION("Basename calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Basename();
+    fakeit::Verify(Method(mockPath, Basename));
+  }
+
+  SECTION("Commonpath calls pimpl") {
+    TestPath path(std::move(mockPathPtr));
+    path.Commonpath({});
+    fakeit::Verify(Method(mockPath, Commonpath));
   }
 
   SECTION("Exists calls pimpl") {

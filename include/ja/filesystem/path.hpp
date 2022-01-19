@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include <initializer_list>
 #include <memory>
 #include <string>
 #include <utility>
@@ -40,6 +39,15 @@ public:
    */
   Path Basename() const;
 
+  /**
+   *
+   * @param paths - A vector of path strings
+   * @return Return a Path containing the longest common sub-path of each
+   * pathname in the vector of paths. Returns an empty path if paths contain
+   * both absolute and relative pathnames, the paths are on the different drives
+   * or if paths is empty. Unlike Commonprefix(), this returns a valid path.
+   */
+  Path Commonpath(const std::vector<std::string> &paths) const;
   /**
    * @return True if `this` refers to an existing path or an open file
    * descriptor. Returns False for broken symbolic links. On some platforms,

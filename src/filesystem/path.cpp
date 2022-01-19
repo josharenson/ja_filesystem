@@ -23,6 +23,10 @@ Path Path::Abspath() const { return Path(std::move(pimpl_->Abspath())); }
 
 Path Path::Basename() const { return Path(std::move(pimpl_->Basename())); }
 
+Path Path::Commonpath(const std::vector<std::string> &paths) const {
+  return Path(std::move(pimpl_->Commonpath(paths)));
+}
+
 bool Path::Exists() const { return pimpl_->Exists(); }
 
 Path Path::Join(const std::string &suffix) const {

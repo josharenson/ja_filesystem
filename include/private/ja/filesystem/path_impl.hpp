@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace ja { namespace filesystem {
 class Path;
@@ -15,6 +16,9 @@ public:
   virtual std::unique_ptr<PathImpl> Abspath() const = 0;
 
   virtual std::unique_ptr<PathImpl> Basename() const = 0;
+
+  virtual std::unique_ptr<PathImpl>
+  Commonpath(const std::vector<std::string> &paths) const = 0;
 
   virtual std::unique_ptr<PathImpl> Copy() const = 0;
 

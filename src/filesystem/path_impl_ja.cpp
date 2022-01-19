@@ -52,6 +52,11 @@ std::unique_ptr<PathImpl> PathImplJa::Basename() const {
   return std::make_unique<PathImplJa>(init);
 }
 
+std::unique_ptr<PathImpl>
+PathImplJa::Commonpath(const std::vector<std::string> &paths) const {
+  return std::unique_ptr<PathImpl>();
+}
+
 std::unique_ptr<PathImpl> PathImplJa::Copy() const {
   return std::make_unique<PathImplJa>(path_);
 }
@@ -110,4 +115,3 @@ std::pair<std::string, std::string> PathImplJa::Split() const {
 }
 
 std::string PathImplJa::ToString() const { return path_; }
-

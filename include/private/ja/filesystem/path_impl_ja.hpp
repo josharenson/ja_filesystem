@@ -15,6 +15,8 @@ public:
 
   std::unique_ptr<PathImpl> Abspath() const override;
   std::unique_ptr<PathImpl> Basename() const override;
+  std::unique_ptr<PathImpl>
+  Commonpath(const std::vector<std::string> &paths) const override;
   std::unique_ptr<PathImpl> Copy() const override;
   bool Exists() const override;
   std::unique_ptr<PathImpl> Join(const std::string &suffix) const override;
